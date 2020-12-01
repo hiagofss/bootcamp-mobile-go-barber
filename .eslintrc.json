@@ -11,7 +11,8 @@
   ],
   "globals": {
     "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
+    "SharedArrayBuffer": "readonly",
+    "__DEV__": "readonly"
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -35,6 +36,7 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
     "no-unused-expressions": "off",
+    "no-use-before-define": "off",
     "react/jsx-filename-extension": [
       1,
       {
