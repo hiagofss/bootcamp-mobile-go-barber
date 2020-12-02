@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   Image,
   View,
-  ScrollView,
   KeyboardAvoidingView,
+  ScrollView,
   Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
+
+import { Form } from '@unform/mobile';
+import { FormHandles } from '@unform/core';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -17,11 +20,12 @@ import logoImg from '../../assets/logo.png';
 import {
   Container,
   Title,
-  BackToSignButton,
-  BackToSignButtonText,
+  BackToSignInButton,
+  BackToSignInButtonText,
 } from './styles';
 
 const SignUp: React.FC = () => {
+  const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
 
   return (
@@ -39,33 +43,34 @@ const SignUp: React.FC = () => {
             <Image source={logoImg} />
 
             <View>
-              <Title>Cria sua conta</Title>
+              <Title>Crie sua conta</Title>
             </View>
-
-            <Input name="name" icon="user" placeholder="Nome" />
-
-            <Input name="email" icon="mail" placeholder="E-Mail" />
-
-            <Input name="password" icon="lock" placeholder="Senha" />
-
-            <Button
-              onPress={() => {
-                console.log('Cadastre');
+            <Form
+              ref={formRef}
+              onSubmit={(data) => {
+                console.log(data);
               }}
+              style={{ width: '100%' }}
             >
-              Criar
-            </Button>
+              <Input name="name" icon="user" placeholder="Nome" />
+
+              <Input name="email" icon="mail" placeholder="E-mail" />
+
+              <Input name="password" icon="lock" placeholder="Senha" />
+
+              <Button onPress={() => formRef.current?.submitForm()}>
+                Criar
+              </Button>
+            </Form>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
-      <BackToSignButton
-        onPress={() => {
-          navigation.goBack();
-        }}
-      >
+
+      <BackToSignInButton onPress={() => navigation.goBack()}>
         <Icon name="arrow-left" size={20} color="#fff" />
-        <BackToSignButtonText>Voltar para o login</BackToSignButtonText>
-      </BackToSignButton>
+
+        <BackToSignInButtonText>Voltar para logon</BackToSignInButtonText>
+      </BackToSignInButton>
     </>
   );
 };
