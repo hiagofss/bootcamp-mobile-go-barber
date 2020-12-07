@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useCallback } from 'react';
 import {
   Image,
   View,
@@ -6,12 +6,15 @@ import {
   ScrollView,
   Platform,
   TextInput,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
-
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
+import * as Yup from 'yup';
+
+import getValidationErrors from '../../utils/getValidationErros';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -25,11 +28,51 @@ import {
   BackToSignInButtonText,
 } from './styles';
 
+interface User {
+  name: string;
+  email: string;
+  password: string;
+}
+
 const SignUp: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const emailInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
   const navigation = useNavigation();
+
+  const handleSignUp = useCallback(async (data: User) => {
+    try {
+      formRef.current?.setErrors({});
+
+      const schema = Yup.object().shape({
+        name: Yup.string().required('Nome obrigatório'),
+        email: Yup.string()
+          .required('E-mail obrigatório')
+          .email('Digite um e-mail válido'),
+        password: Yup.string().min(8, 'No minimo 8 digitos'),
+      });
+
+      await schema.validate(data, { abortEarly: false });
+
+      // await api.post('users', data);
+
+      Alert.alert(
+        'Cadastrado realizado com sucesso',
+        'Você já pode fazer seu login no GoBarber',
+      );
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const errors = getValidationErrors(error);
+
+        formRef.current?.setErrors(errors);
+      }
+
+      Alert.alert(
+        'Erro no cadastro',
+        'Ocorreu um erro ao fazer cadastro, verifique os dados e tente novamente.',
+      );
+    }
+  }, []);
 
   return (
     <>
@@ -50,9 +93,7 @@ const SignUp: React.FC = () => {
             </View>
             <Form
               ref={formRef}
-              onSubmit={(data) => {
-                console.log(data);
-              }}
+              onSubmit={handleSignUp}
               style={{ width: '100%' }}
             >
               <Input
