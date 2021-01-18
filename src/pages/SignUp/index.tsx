@@ -16,7 +16,7 @@ import * as Yup from 'yup';
 
 import api from '../../services/api';
 
-import getValidationErrors from '../../utils/getValidationErros';
+import getValidationErrors from '../../utils/getValidationErrors';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
